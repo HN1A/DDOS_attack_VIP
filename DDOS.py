@@ -1,32 +1,48 @@
 import os
-try:    
-    import httpx
-    import requests
-    import urllib3
-    import urllib.request
-    import cloudscraper
-    import aiohttp
-    import asyncio
-    import random
-    from threading import Thread
-    from concurrent.futures import ThreadPoolExecutor
-    from random import choice
-    from user_agent import generate_user_agent
-except:
-    os.system("pip install httpx requests cloudscraper aiohttp user_agent asyncio")    
-    import httpx
-    import requests
-    import urllib3
-    import urllib.request
-    import cloudscraper
-    import aiohttp
-    import asyncio
-    import random
-    from threading import Thread
-    from concurrent.futures import ThreadPoolExecutor
-    from random import choice
-    from user_agent import generate_user_agent
+import importlib
+import subprocess
+import sys
 
+# قائمة بالمكتبات المطلوبة واسم الحزمة إذا كان مختلفًا
+REQUIRED_LIBRARIES = {
+    'httpx': 'httpx',
+    'requests': 'requests',
+    'urllib3': 'urllib3',
+    'cloudscraper': 'cloudscraper',
+    'aiohttp': 'aiohttp',
+    'user_agent': 'user_agent',
+    'asyncio': 'asyncio',
+    'concurrent.futures': 'concurrent.futures',
+    'threading': 'threading',
+    'random': 'random'
+}
+
+def install_library(library_name, package_name=None):
+    if package_name is None:
+        package_name = library_name
+    try:
+        importlib.import_module(library_name)
+    except ImportError:
+        print(f"جاري تثبيت المكتبة {package_name}...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
+
+# تثبيت المكتبات المطلوبة
+for lib, pkg in REQUIRED_LIBRARIES.items():
+    install_library(lib, pkg)
+
+# استيراد المكتبات بعد التثبيت
+import httpx
+import requests
+import urllib3
+import urllib.request
+import cloudscraper
+import aiohttp
+import asyncio
+import random
+from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
+from random import choice
+from user_agent import generate_user_agent
 
 E = '\033[1;31m'
 G = '\033[1;35m'
@@ -175,8 +191,6 @@ async def send_aiohttp():
         bb += 1
     Hrrani()
 
-
-
 def Ahmed():
     with ThreadPoolExecutor(max_workers=num) as executor:
         try:
@@ -186,12 +200,11 @@ def Ahmed():
                 executor.submit(send_urllib3)
                 executor.submit(send_urllib)
                 executor.submit(send_cloudscraper)
-                executor.submit(asyncio.run(send_aiohttp()))  
+                executor.submit(asyncio.run, send_aiohttp())
         except RuntimeError:            
             pass
         except Exception:
-        	pass
-
+            pass
 
 threads = []
 for _ in range(num):
